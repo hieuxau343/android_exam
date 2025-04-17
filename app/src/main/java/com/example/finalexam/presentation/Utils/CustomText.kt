@@ -1,4 +1,4 @@
-package com.example.finalexam.components
+package com.example.finalexam.presentation.Utils
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

@@ -1,9 +1,10 @@
-package com.example.finalexam.components
+package com.example.finalexam.presentation.Utils
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,18 +28,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finalexam.R
-import com.example.finalexam.model.MenuItem
+import com.example.finalexam.SharedPrefsHelper
+import com.example.finalexam.presentation.model.MenuItem
+import com.example.finalexam.presentation.viewmodel.HomeViewModel
 
 @Composable
-fun DrawerHeader() {
+fun DrawerHeader(homeViewModel: HomeViewModel,context: Context) {
+    val sharedPrefsHelper = SharedPrefsHelper(context)
+    val token = sharedPrefsHelper.getToken()!!
+    val user = homeViewModel.user
+
+    LaunchedEffect(Unit) {
+        homeViewModel.get_user_info(token)
+    }
+
     Box(
         Modifier.background(
             // Áp dụng màu gradient
@@ -72,7 +83,14 @@ fun DrawerHeader() {
                         .clip(CircleShape)
 
                 )
-                Text("Trần Minh Hiếu", modifier = Modifier.padding(start = 10.dp))
+
+                if (user != null) {
+                    Text(
+                        text = user?.fullname ?: "Guest"  ,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                }
+
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.finalexam.model
+package com.example.finalexam.presentation.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector

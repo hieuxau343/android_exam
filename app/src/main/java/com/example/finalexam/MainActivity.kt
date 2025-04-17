@@ -1,14 +1,13 @@
 package com.example.finalexam
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,23 +16,20 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.finalexam.components.DrawerBody
-import com.example.finalexam.components.DrawerHeader
-import com.example.finalexam.model.MenuItem
-import com.example.finalexam.ui.screens.HomeScreen
+import com.example.finalexam.presentation.Utils.DrawerBody
+import com.example.finalexam.presentation.Utils.DrawerHeader
+import com.example.finalexam.presentation.model.MenuItem
+import com.example.finalexam.presentation.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -43,10 +39,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApp()
-
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,13 +50,17 @@ fun MyApp() {
     val navController = rememberNavController() // <-- Đặt ở đây
     val drawerState = rememberDrawerState(DrawerValue.Closed) // Trạng thái đóng/mở
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val homeViewModel: HomeViewModel = viewModel()
+
+
 
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(Modifier.width(250.dp)) {
-                DrawerContent(navController, scope = scope, drawerState = drawerState)
+                DrawerContent(homeViewModel,navController, scope = scope, drawerState = drawerState, context = context)
             }
         },
         gesturesEnabled = true // Bật vuốt để mở menu
@@ -81,7 +81,7 @@ fun MyApp() {
 
             }
         ) { paddingValues ->
-            AppNavHost(navController = navController, modifier = Modifier.padding(paddingValues))
+            appNavHost(navController = navController, modifier = Modifier.padding(paddingValues))
         }
 
 
@@ -91,14 +91,16 @@ fun MyApp() {
 
 @Composable
 fun DrawerContent(
+    homeViewModel: HomeViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
     scope: CoroutineScope,
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    context: Context
 ) {
 
     // Đưa DrawerHeader vào đây
-    DrawerHeader()
+    DrawerHeader(homeViewModel, context = context)
 
     // Đưa DrawerBody vào đây
     val items = listOf(
@@ -117,7 +119,7 @@ fun DrawerContent(
 
     )
     DrawerBody(items = items) { item ->
-        navController.navigate(item.route) 
+        navController.navigate(item.route)
         scope.launch {
             drawerState.close()
         }

@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalexam.RetrofitClient
 import com.example.finalexam.data.model.Category
+import com.example.finalexam.data.model.Song
 import com.example.finalexam.data.model.User
 import kotlinx.coroutines.launch
 
 class HomeViewModel() : ViewModel() {
 
     var categories by mutableStateOf<List<Category>>(emptyList())
+    var songs by mutableStateOf<List<Song>>(emptyList())
     var user by mutableStateOf<User?>(null)
     fun fetchCategories() {
         viewModelScope.launch {
@@ -35,5 +37,13 @@ class HomeViewModel() : ViewModel() {
 
         }
 
+    }
+    fun fetchSongs(){
+        viewModelScope.launch {
+            val response = RetrofitClient.songApi.getSongs()
+            if(response.isSuccessful){
+                songs = response.body() ?: emptyList()
+            }
+        }
     }
 }

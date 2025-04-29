@@ -1,5 +1,6 @@
 package com.example.finalexam.presentation.Utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -39,15 +40,20 @@ import com.example.finalexam.SharedPrefsHelper
 import com.example.finalexam.presentation.model.MenuItem
 import com.example.finalexam.presentation.viewmodel.HomeViewModel
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun DrawerHeader(homeViewModel: HomeViewModel,context: Context) {
     val sharedPrefsHelper = SharedPrefsHelper(context)
-    val token = sharedPrefsHelper.getToken()!!
+    val token = sharedPrefsHelper.getToken()
     val user = homeViewModel.user
 
-    LaunchedEffect(Unit) {
-        homeViewModel.get_user_info(token)
+    LaunchedEffect(token) {
+        if (!token.isNullOrEmpty()) {
+            homeViewModel.get_user_info(token)
+        }
     }
+
+
 
     Box(
         Modifier.background(

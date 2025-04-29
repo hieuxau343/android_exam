@@ -37,11 +37,12 @@ fun TopBar(onOpenDrawer: () -> Unit, modifier: Modifier = Modifier) {
     TopAppBar(
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = Color.Black,
         ),
-        title = { Text("Music app") },
+        title = { Text("Music app", color = Color.White ) },
         navigationIcon = {
             Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu",
+                 tint = Color.White,
                  modifier = Modifier
                      .padding(start = 16.dp, end = 8.dp)
                      .size(28.dp)

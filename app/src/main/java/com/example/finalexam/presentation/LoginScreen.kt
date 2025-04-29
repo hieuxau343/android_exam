@@ -41,9 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.finalexam.R
-import com.example.finalexam.appNavHost
 import com.example.finalexam.presentation.Utils.CustomTextField
 import com.example.finalexam.presentation.viewmodel.LoginViewModel
 

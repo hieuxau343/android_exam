@@ -1,5 +1,7 @@
 package com.example.finalexam
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -26,14 +28,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.finalexam.presentation.LoginScreen
+import com.example.finalexam.presentation.SearchScreen
 import com.example.finalexam.presentation.Utils.DrawerBody
 import com.example.finalexam.presentation.Utils.DrawerHeader
 import com.example.finalexam.presentation.model.MenuItem
 import com.example.finalexam.presentation.viewmodel.HomeViewModel
+import com.example.finalexam.ui.screens.HomeScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("ContextCastToActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -44,7 +50,6 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp() {
     val navController = rememberNavController() // <-- Đặt ở đây
@@ -52,36 +57,44 @@ fun MyApp() {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val homeViewModel: HomeViewModel = viewModel()
-
-
-
+    val currentRoute = remember { mutableStateOf("login_screen") }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(Modifier.width(250.dp)) {
-                DrawerContent(homeViewModel,navController, scope = scope, drawerState = drawerState, context = context)
+            ModalDrawerSheet(Modifier.width(350.dp)) {
+                DrawerContent(
+                    homeViewModel,
+                    navController,
+                    scope = scope,
+                    drawerState = drawerState,
+                    context = context
+                )
             }
         },
         gesturesEnabled = true // Bật vuốt để mở menu
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+
             topBar = {
-//
-                TopBar(
-                    onOpenDrawer = {
-                        scope.launch {
-                            drawerState.apply {
-                                if (isClosed) open() else close()
+                if (currentRoute.value != "login_screen" && currentRoute.value != "signup_screen") {
+                    TopBar(
+                        onOpenDrawer = {
+                            scope.launch {
+                                drawerState.apply {
+                                    if (isClosed) open() else close()
+                                }
                             }
                         }
-                    },
-                )
-
+                    )
+                }
             }
         ) { paddingValues ->
-            appNavHost(navController = navController, modifier = Modifier.padding(paddingValues))
+            appNavHost(
+                navController = navController,
+                modifier = Modifier.padding(paddingValues),
+                onRouteChange = { currentRoute.value = it })
         }
 
 

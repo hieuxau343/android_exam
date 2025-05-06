@@ -39,17 +39,22 @@ import com.example.finalexam.R
 import com.example.finalexam.SharedPrefsHelper
 import com.example.finalexam.presentation.model.MenuItem
 import com.example.finalexam.presentation.viewmodel.HomeViewModel
+import com.example.finalexam.presentation.viewmodel.UserInfoViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun DrawerHeader(homeViewModel: HomeViewModel,context: Context) {
+fun DrawerHeader(userInfoViewModel: UserInfoViewModel,context: Context) {
     val sharedPrefsHelper = SharedPrefsHelper(context)
     val token = sharedPrefsHelper.getToken()
-    val user = homeViewModel.user
-
-    LaunchedEffect(token) {
+    val user = userInfoViewModel.user
+    Log.e("test",token.toString())
+    LaunchedEffect(user) {
         if (!token.isNullOrEmpty()) {
-            homeViewModel.get_user_info(token)
+
+            userInfoViewModel.get_user_info(token)
+            Log.e("user",token.toString())
+            Log.e("user",user.toString())
+
         }
     }
 

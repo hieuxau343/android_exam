@@ -1,4 +1,4 @@
-package com.example.finalexam.presentation
+package com.example.finalexam.presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

@@ -1,10 +1,10 @@
-package com.example.finalexam.ui.screens
+package com.example.finalexam.presentation.ui
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun AccountScreen(modifier: Modifier = Modifier) {
-    Text("CCCCC")
+fun EditScreen(modifier: Modifier = Modifier) {
+    Text("a");
 }

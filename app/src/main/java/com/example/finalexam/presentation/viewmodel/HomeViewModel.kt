@@ -15,7 +15,6 @@ class HomeViewModel() : ViewModel() {
 
     var categories by mutableStateOf<List<Category>>(emptyList())
     var songs by mutableStateOf<List<Song>>(emptyList())
-    var user by mutableStateOf<User?>(null)
     fun fetchCategories() {
         viewModelScope.launch {
                 val response = RetrofitClient.categoryApi.getCategories()
@@ -26,18 +25,7 @@ class HomeViewModel() : ViewModel() {
         }
     }
 
-    fun get_user_info(token : String) {
 
-
-        viewModelScope.launch {
-            val response = RetrofitClient.userApi.getUserInfo("Bearer $token")
-            if (response.isSuccessful) {
-                user = response.body();
-            }
-
-        }
-
-    }
     fun fetchSongs(){
         viewModelScope.launch {
             val response = RetrofitClient.songApi.getSongs()

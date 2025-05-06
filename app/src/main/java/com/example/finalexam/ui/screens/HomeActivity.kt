@@ -155,7 +155,6 @@ fun HomeScreen(navController: NavController,modifier: Modifier = Modifier, homeV
                                 .clickable {
                                     //click vao nhac
                                     navController.navigate("play_screen/${song.id}")
-                                    Log.e("Songid",song.id.toString())
                                 }
                         ) {
                             AsyncImage(

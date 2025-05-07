@@ -116,17 +116,8 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 if (fullName.isNotBlank() && userName.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()) {
-                    if (password == confirmPassword) {
-                        viewModel.signup(fullName, userName, password)
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Mật khẩu hoặc xác nhận mật khẩu sai",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        viewModel.signup(fullName, userName, password,confirmPassword)
 
-
-                    }
                 } else {
                     Toast.makeText(context, "Nhập thông tin đầy đủ", Toast.LENGTH_SHORT).show()
                 }
@@ -140,17 +131,16 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
             Text("Đăng ký", color = colorResource(id = R.color.white))
         }
 
-        signupState?.let { i ->
-            if (i.isSuccess) {
-                LaunchedEffect(Unit) {
-                    Toast.makeText(context, "Đăng ký thành công", Toast.LENGTH_SHORT).show()
+        signupState?.let { message ->
+            LaunchedEffect(message) {
+
+                    Toast.makeText(context, "ab"+message, Toast.LENGTH_SHORT).show()
+                    // Reset fields
                     fullName = ""
                     userName = ""
                     password = ""
                     confirmPassword = ""
-                }
-            } else {
-                Toast.makeText(context, i.exceptionOrNull()?.message, Toast.LENGTH_SHORT).show()
+
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {

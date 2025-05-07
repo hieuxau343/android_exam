@@ -11,13 +11,13 @@ import com.example.finalexam.presentation.ui.SignUpScreen
 import com.example.finalexam.presentation.ui.SongPlayScreen
 import com.example.finalexam.presentation.ui.AccountScreen
 import com.example.finalexam.presentation.ui.EditScreen
-import com.example.finalexam.ui.screens.HomeScreen
+import com.example.finalexam.presentation.ui.HomeScreen
 import com.example.finalexam.ui.screens.LoveScreen
 import com.example.finalexam.ui.screens.SearchScreen
 
 @Composable
 fun appNavHost(navController: NavHostController, modifier: Modifier, onRouteChange: (String) -> Unit) {
-    NavHost(navController = navController, startDestination = "account_screen", modifier = modifier) {
+    NavHost(navController = navController, startDestination = "signup_screen", modifier = modifier) {
         composable("home_screen") {
             onRouteChange("home_screen")
             HomeScreen(navController)
@@ -44,7 +44,9 @@ fun appNavHost(navController: NavHostController, modifier: Modifier, onRouteChan
         }
         composable("edit_screen") {
             onRouteChange("edit_screen")
-            EditScreen()
+            EditScreen(
+//                navController
+            )
         }
         composable("play_screen/{songId}") { backStackEntry ->
             val songId = backStackEntry.arguments?.getString("songId")?.toIntOrNull()

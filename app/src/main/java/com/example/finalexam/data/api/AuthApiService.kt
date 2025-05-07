@@ -12,6 +12,6 @@ interface AuthApiService {
     @POST("api/login.php")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-    @POST("api/signup.php")
+    @POST("api/user/signup")
     suspend fun signup(@Body request: SignupRequest): Response<SignupResponse>
 }

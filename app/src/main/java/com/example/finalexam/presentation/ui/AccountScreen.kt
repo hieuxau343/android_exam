@@ -41,6 +41,7 @@ import com.example.finalexam.R
 import com.example.finalexam.SharedPrefsHelper
 import com.example.finalexam.presentation.viewmodel.UserInfoViewModel
 
+@Preview(showBackground = true)
 @Composable
 fun AccountScreen(navController: NavController) {
     val userInfoViewModel: UserInfoViewModel = viewModel()
@@ -68,7 +69,7 @@ fun AccountScreen(navController: NavController) {
                 )
             )
             .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 40.dp)
+            .padding(10.dp)
     ) {
         item {
             IconButton(onClick = {}) {
@@ -126,7 +127,10 @@ fun AccountScreen(navController: NavController) {
                 "Chỉnh sửa",
                 modifier = Modifier
                     .border(width = 1.dp, color = Color.LightGray, shape = CircleShape)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .clickable {
+                        navController.navigate("edit_screen")
+                    },
                 color = Color.White, fontWeight = FontWeight.Bold
             )        }
     }

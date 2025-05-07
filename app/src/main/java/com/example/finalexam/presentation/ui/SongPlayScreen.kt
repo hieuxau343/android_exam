@@ -172,7 +172,7 @@ fun SongPlayScreen(songId: Int, modifier: Modifier = Modifier, songViewModel: So
                     )
                 )
                 .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 40.dp)
+                .padding(10.dp)
         ) {
             item {
                 Row(

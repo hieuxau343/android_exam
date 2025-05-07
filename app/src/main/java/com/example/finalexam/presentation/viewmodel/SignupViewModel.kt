@@ -8,31 +8,36 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalexam.RetrofitClient
 import com.example.finalexam.data.model.SignupRequest
-import com.example.finalexam.data.model.SignupResponse
 import kotlinx.coroutines.launch
-import kotlin.math.log
+import org.json.JSONObject
 
-class SignupViewModel(): ViewModel() {
-    var signupState by mutableStateOf<Result<Unit>?>(null)
+class SignupViewModel : ViewModel() {
+    var signupState by mutableStateOf<String?>(null)
 
-    fun signup(fullname:String,username : String,password: String){
-        val signupRequest = SignupRequest(fullname,username,password)
-
+    fun signup(fullname: String, username: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.authApi.signup(signupRequest)
-                if(response.isSuccessful){
-                    val body = response.body()
-                    Log.e("body",body.toString())
-                    if(body?.status == "success")
-                        signupState = Result.success(Unit)
-                    else
-                        signupState = Result.failure(Exception("Đăng ký không thành công"))
+                val request = SignupRequest(fullname, username, password, confirmPassword)
+                val response = RetrofitClient.authApi.signup(request)
+                Log.e("response", response.toString())
+
+                if (response.isSuccessful) {
+                    // Thành công
+                    val message = response.body()?.message ?: "Đăng ký thành công!"
+                    Log.e("response", message.toString())
+
+                    signupState = message
+                } else {
+                    // Lỗi trả về từ server (400, 409,...)
+                    val errorBody = response.errorBody()?.string()
+                    val message = JSONObject(errorBody).optString("message", "Đăng ký thất bại")
+                    signupState = message
+                    Log.e("response", message.toString())
+
                 }
-            } catch (e:Exception){
-                Log.e("Bug",e.message.toString())
+            } catch (e: Exception) {
+                signupState = "Lỗi kết nối hoặc máy chủ"
             }
         }
-
     }
 }

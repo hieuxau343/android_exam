@@ -52,8 +52,7 @@ fun DrawerHeader(userInfoViewModel: UserInfoViewModel,context: Context) {
         if (!token.isNullOrEmpty()) {
 
             userInfoViewModel.get_user_info(token)
-            Log.e("user",token.toString())
-            Log.e("user",user.toString())
+
 
         }
     }
@@ -95,12 +94,15 @@ fun DrawerHeader(userInfoViewModel: UserInfoViewModel,context: Context) {
 
                 )
 
-                if (user != null) {
+                user?.let {
                     Text(
-                        text = user?.fullname ?: "Guest"  ,
+                        text = it.fullname,
                         modifier = Modifier.padding(start = 10.dp)
                     )
-                }
+                } ?: Text(
+                    text = "Guest",
+                    modifier = Modifier.padding(start = 10.dp)
+                )
 
             }
         }

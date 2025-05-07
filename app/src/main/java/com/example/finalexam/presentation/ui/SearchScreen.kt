@@ -43,7 +43,7 @@ fun SearchScreen(
                     end = Offset(0f, Float.POSITIVE_INFINITY) // Điểm kết thúc gradient (dưới cùng)
                 )
             )
-            .padding(16.dp)
+            .padding(10.dp)
     ) {
         OutlinedTextField(
             value = query,

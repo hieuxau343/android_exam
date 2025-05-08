@@ -36,10 +36,9 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.finalexam.R
 
-@Preview(showBackground = true)
 @Composable
 fun EditScreen(
-//    navController: NavController
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -56,8 +55,8 @@ fun EditScreen(
 
         ) {
             IconButton(onClick = {
-                //quay ve trang account_screen
-//                navController.navigate("account_screen")
+//                quay ve trang account_screen
+                navController.popBackStack()
             }) {
                 Icon(
                     imageVector = Icons.Default.Clear,

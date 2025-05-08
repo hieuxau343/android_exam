@@ -18,6 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,21 +35,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.finalexam.R
 import com.example.finalexam.SharedPrefsHelper
 import com.example.finalexam.presentation.model.MenuItem
-import com.example.finalexam.presentation.viewmodel.HomeViewModel
 import com.example.finalexam.presentation.viewmodel.UserInfoViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun DrawerHeader(userInfoViewModel: UserInfoViewModel,context: Context) {
+private fun DrawerHeader(userInfoViewModel: UserInfoViewModel,context: Context) {
     val sharedPrefsHelper = SharedPrefsHelper(context)
     val token = sharedPrefsHelper.getToken()
     val user = userInfoViewModel.user
@@ -110,7 +117,7 @@ fun DrawerHeader(userInfoViewModel: UserInfoViewModel,context: Context) {
 }
 
 @Composable
-fun DrawerBody(
+private fun DrawerBody(
 
     items: List<MenuItem>, itemTextStyle: TextStyle = TextStyle(
         fontSize = 18.sp
@@ -136,5 +143,44 @@ fun DrawerBody(
 
             }
         }
+    }
+}
+
+@Composable
+fun DrawerContent(
+    userInfoViewModel: UserInfoViewModel,
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    scope: CoroutineScope,
+    drawerState: DrawerState,
+    context: Context
+) {
+
+    // Đưa DrawerHeader vào đây
+    DrawerHeader(userInfoViewModel = userInfoViewModel, context = context)
+
+    // Đưa DrawerBody vào đây
+    val items = listOf(
+        MenuItem("1", "Trang chủ", Icons.Default.Home, route = "home_screen"),
+        MenuItem(
+            "2",
+            "Yêu thích",
+            Icons.Default.Favorite,
+            route = "love_screen",
+            iconColor = Color.Red,
+
+
+            ),
+        MenuItem("3", "Tìm kiếm", Icons.Default.Search, "search_screen"),
+        MenuItem("4", "Hồ sơ", Icons.Default.Person, "account_screen")
+
+    )
+    DrawerBody(items = items) { item ->
+        navController.navigate(item.route)
+        scope.launch {
+            drawerState.close()
+        }
+
+
     }
 }

@@ -71,17 +71,7 @@ fun AccountScreen(navController: NavController) {
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        item {
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Shuffle",
-                    tint = Color.White,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+
         item {
             Row(
                 modifier = Modifier.clickable {
@@ -119,7 +109,7 @@ fun AccountScreen(navController: NavController) {
                     )
                 }
             }
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
         }
         item {
@@ -132,6 +122,7 @@ fun AccountScreen(navController: NavController) {
                         navController.navigate("edit_screen")
                     },
                 color = Color.White, fontWeight = FontWeight.Bold
-            )        }
+            )
+        }
     }
 }

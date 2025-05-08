@@ -10,8 +10,11 @@ import retrofit2.http.POST
 
 interface AuthApiService {
     @POST("api/login.php")
-    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+    suspend fun login(@Body request: LoginRequest): Response<LoginResponse> //php
+
+//    @POST("api/signup")
+//    suspend fun signup(@Body request: SignupRequest): Response<SignupResponse> //php
 
     @POST("api/user/signup")
-    suspend fun signup(@Body request: SignupRequest): Response<SignupResponse>
+    suspend fun signup(@Body request: SignupRequest): Response<SignupResponse> //node.js
 }

@@ -1,5 +1,6 @@
 package com.example.finalexam
 
+import LoveScreen
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,8 +13,7 @@ import com.example.finalexam.presentation.ui.SongPlayScreen
 import com.example.finalexam.presentation.ui.AccountScreen
 import com.example.finalexam.presentation.ui.EditScreen
 import com.example.finalexam.presentation.ui.HomeScreen
-import com.example.finalexam.ui.screens.LoveScreen
-import com.example.finalexam.ui.screens.SearchScreen
+import com.example.finalexam.presentation.ui.SearchScreen
 
 @Composable
 fun appNavHost(navController: NavHostController, modifier: Modifier, onRouteChange: (String) -> Unit) {
@@ -24,7 +24,7 @@ fun appNavHost(navController: NavHostController, modifier: Modifier, onRouteChan
         }
         composable("love_screen") {
             onRouteChange("love_screen")
-            LoveScreen()
+            LoveScreen(navController)
         }
         composable("search_screen") {
             onRouteChange("search_screen")
@@ -45,7 +45,7 @@ fun appNavHost(navController: NavHostController, modifier: Modifier, onRouteChan
         composable("edit_screen") {
             onRouteChange("edit_screen")
             EditScreen(
-//                navController
+                navController
             )
         }
         composable("play_screen/{songId}") { backStackEntry ->

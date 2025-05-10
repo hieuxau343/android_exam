@@ -19,12 +19,10 @@ class SignupViewModel : ViewModel() {
             try {
                 val request = SignupRequest(fullname, username, password, confirmPassword)
                 val response = RetrofitClient.authApi.signup(request)
-                Log.e("response", response.toString())
 
                 if (response.isSuccessful) {
                     // Thành công
                     val message = response.body()?.message ?: "Đăng ký thành công!"
-                    Log.e("response", message.toString())
 
                     signupState = message
                 } else {
@@ -32,7 +30,6 @@ class SignupViewModel : ViewModel() {
                     val errorBody = response.errorBody()?.string()
                     val message = JSONObject(errorBody).optString("message", "Đăng ký thất bại")
                     signupState = message
-                    Log.e("response", message.toString())
 
                 }
             } catch (e: Exception) {

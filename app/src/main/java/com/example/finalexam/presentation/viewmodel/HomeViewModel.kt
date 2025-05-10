@@ -14,24 +14,17 @@ import kotlinx.coroutines.launch
 class HomeViewModel() : ViewModel() {
 
     var categories by mutableStateOf<List<Category>>(emptyList())
-    var songs by mutableStateOf<List<Song>>(emptyList())
     fun fetchCategories() {
         viewModelScope.launch {
                 val response = RetrofitClient.categoryApi.getCategories()
                 if (response.isSuccessful) {
                     categories = response.body() ?: emptyList()
+
                 }
 
         }
     }
 
 
-    fun fetchSongs(){
-        viewModelScope.launch {
-            val response = RetrofitClient.songApi.getSongs()
-            if(response.isSuccessful){
-                songs = response.body() ?: emptyList()
-            }
-        }
-    }
+
 }

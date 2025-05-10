@@ -1,5 +1,6 @@
 package com.example.finalexam.presentation.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -100,14 +101,9 @@ fun LoginScreen(navController: NavController, modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
-                if (userName.isNotBlank() && password.isNotBlank()) {
-                    viewModel.login(context, userName, password)
+                viewModel.login(context, userName, password)
 
-                } else {
-                    Toast.makeText(context, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_LONG)
-                        .show()
 
-                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,18 +114,28 @@ fun LoginScreen(navController: NavController, modifier: Modifier = Modifier) {
             Text("Đăng nhập")
         }
 
-        loginState?.let { i ->
-            if (i.isSuccess) {
-                LaunchedEffect(Unit) {
 
+
+        loginState?.let { message ->
+            LaunchedEffect(message) {
+
+                if (message == "Đăng nhập thành công") {
                     navController.navigate("home_screen") {
                         popUpTo("login_screen") { inclusive = true }
+
                     }
+                } else {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    userName = ""
+                    password = ""
                 }
-            } else {
-                Toast.makeText(context, i.exceptionOrNull()?.message, Toast.LENGTH_SHORT).show()
+                // Reset fields
+
+
             }
         }
+
+
         TextButton(onClick = {
 //            Xu ly chuyen sang trang dang ky
             navController.navigate("signup_screen") {

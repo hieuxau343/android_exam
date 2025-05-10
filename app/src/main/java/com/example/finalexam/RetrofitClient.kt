@@ -8,11 +8,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-//    private const val BASE_URL = "http://10.0.2.2:3001/"
-    private const val BASE_URL = "http://10.0.2.2:/music_app/"
+    private const val BASE_URL = "http://10.0.2.2:3000/"
+    private const val php_URL = "http://10.0.2.2:/music_app/"
 
     
-    val retrofit by lazy {
+    val phpretrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(php_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+    val noderetrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -20,17 +26,15 @@ object RetrofitClient {
     }
 
     val categoryApi: CategoryApiService by lazy {
-        retrofit.create(CategoryApiService::class.java)
+        phpretrofit.create(CategoryApiService::class.java)
     }
     val authApi: AuthApiService by lazy {
-        retrofit.create(AuthApiService::class.java)
+        noderetrofit.create(AuthApiService::class.java)
     }
 
-    val userApi: UserApiService by lazy {
-        retrofit.create(UserApiService::class.java)
-    }
+
     val songApi: SongApiService by lazy {
-        retrofit.create(SongApiService::class.java)
+        noderetrofit.create(SongApiService::class.java)
     }
 
 }

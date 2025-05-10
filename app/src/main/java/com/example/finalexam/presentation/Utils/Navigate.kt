@@ -1,4 +1,4 @@
-package com.example.finalexam
+package com.example.finalexam.presentation.Utils
 
 import LoveScreen
 import android.util.Log
@@ -50,10 +50,12 @@ fun appNavHost(navController: NavHostController, modifier: Modifier, onRouteChan
         }
         composable("play_screen/{songId}") { backStackEntry ->
             val songId = backStackEntry.arguments?.getString("songId")?.toIntOrNull()
-            if (songId != null) {
-                SongPlayScreen(songId = songId)
-                Log.e("SongID",songId.toString())
+            songId?.let {
+                onRouteChange("play_screen/$it")
+                Log.e("SongID", it.toString())
+                SongPlayScreen(navController,songId = it)
             }
         }
+
     }
 }

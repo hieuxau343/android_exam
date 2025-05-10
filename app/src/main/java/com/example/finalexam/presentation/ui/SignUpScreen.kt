@@ -115,12 +115,7 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
-                if (fullName.isNotBlank() && userName.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()) {
-                        viewModel.signup(fullName, userName, password,confirmPassword)
-
-                } else {
-                    Toast.makeText(context, "Nhập thông tin đầy đủ", Toast.LENGTH_SHORT).show()
-                }
+                viewModel.signup(fullName, userName, password, confirmPassword)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -134,12 +129,17 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
         signupState?.let { message ->
             LaunchedEffect(message) {
 
-                    Toast.makeText(context, "ab"+message, Toast.LENGTH_SHORT).show()
-                    // Reset fields
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                if(message == "Đăng ký thành công!"){
+                    navController.navigate("login_screen")
+                }else{
                     fullName = ""
                     userName = ""
                     password = ""
                     confirmPassword = ""
+                }
+                // Reset fields
+
 
             }
         }

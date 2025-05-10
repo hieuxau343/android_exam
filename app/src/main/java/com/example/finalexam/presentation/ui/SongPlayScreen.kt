@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.finalexam.R
 import com.example.finalexam.presentation.viewmodel.SongViewModel
@@ -58,7 +59,7 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SongPlayScreen(songId: Int, modifier: Modifier = Modifier, songViewModel: SongViewModel = viewModel()) {
+fun SongPlayScreen(navController : NavController,modifier: Modifier = Modifier, songViewModel: SongViewModel = viewModel(), songId: Int) {
     val context = LocalContext.current
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
     var isPlaying by remember { mutableStateOf(false) }
@@ -72,19 +73,16 @@ fun SongPlayScreen(songId: Int, modifier: Modifier = Modifier, songViewModel: So
 
     LaunchedEffect(Unit) {
         songViewModel.fetchSongById(songId)
-
     }
 
 
-
     LaunchedEffect(song) {
-        if (song == null) return@LaunchedEffect
 
         mediaPlayer?.release()
         val player = MediaPlayer()
         try {
             //gan bai hat vao
-            player.setDataSource(song.link_song)
+            player.setDataSource(song?.audio)
             player.prepareAsync()
 
             player.setOnPreparedListener {
@@ -147,208 +145,206 @@ fun SongPlayScreen(songId: Int, modifier: Modifier = Modifier, songViewModel: So
             mediaPlayer?.release()
         }
     }
-    if (song == null) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black),
-            contentAlignment = Alignment.Center
-        ) {
-            // Loading spinner
-            androidx.compose.material3.CircularProgressIndicator(color = Color.White)
-        }
-        return
-    }else{
-        LazyColumn(
-            modifier = modifier
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFFAAAAAA),
-                            Color.Black
-                        ), // Định nghĩa màu chuyển tiếp từ trắng sang đen
-                        start = Offset(0f, 0f),  // Điểm bắt đầu gradient (trên cùng)
-                        end = Offset(0f, Float.POSITIVE_INFINITY) // Điểm kết thúc gradient (dưới cùng)
-                    )
+
+    LazyColumn(
+        modifier = modifier
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFFAAAAAA),
+                        Color.Black
+                    ), // Định nghĩa màu chuyển tiếp từ trắng sang đen
+                    start = Offset(0f, 0f),  // Điểm bắt đầu gradient (trên cùng)
+                    end = Offset(0f, Float.POSITIVE_INFINITY) // Điểm kết thúc gradient (dưới cùng)
                 )
-                .fillMaxSize()
-                .padding(10.dp)
-        ) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Close",
-                        tint = Color.White,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "More",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clickable {
-                                showSheet = true
-                            },
+            )
+            .fillMaxSize()
+            .padding(10.dp)
+    ) {
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Close",
+                    tint = Color.White,
+                    modifier = Modifier.size(40.dp).clickable {
+                        navController.popBackStack()
 
-                        )
-
-
-                }
-            }
-
-
-
-            item {
-                Spacer(modifier = Modifier.height(40.dp))
-            }
-
-            item {
-                AsyncImage(
-                    model = song.image_song,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    error = painterResource(id = R.drawable.background),// ảnh tạm thời
+                    }
+                )
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "More",
+                    tint = Color.White,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .height(350.dp)
-                )
-                Spacer(modifier = Modifier.height(40.dp))
-
-            }
-
-
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Column {
-                        Text(song.name_song, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                        Text(song.singer, fontSize = 15.sp, color = Color.LightGray)
-                    }
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp) // Kích thước tổng thể (bao gồm viền)
-                            .clip(CircleShape) // Bo tròn
-                            .border(2.dp, Color.White, CircleShape) // Viền trắng
-                            .padding(10.dp) // Cách mép một chút cho icon nhỏ gọn hơn
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add",
-                            tint = Color.White,
-                            modifier = Modifier.fillMaxSize() // Để icon chiếm toàn bộ phần còn lại trong Box
-                        )
-                    }
-
-
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-
-
-            }
-
-            item {
-                Slider(
-                    value = sliderPosition,
-                    onValueChange = { newValue ->
-                        sliderPosition = newValue
-                        mediaPlayer?.seekTo((duration * newValue).toInt())
-                        currentPosition = (duration * newValue).toInt()
-                    },
-                    valueRange = 0f..1f,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = SliderDefaults.colors(
-                        thumbColor = Color.White,
-                        activeTrackColor = Color.White
+                        .size(30.dp)
+                        .clickable {
+                            showSheet = true
+                        },
 
                     )
+
+
+            }
+        }
+
+
+
+        item {
+            Spacer(modifier = Modifier.height(40.dp))
+        }
+
+        item {
+            AsyncImage(
+                model = song?.image,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = R.drawable.background),// ảnh tạm thời
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .height(350.dp)
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+
+        }
+
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Column {
+                    song?.name?.let {
+                        Text(
+                            text = it,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                    song?.artist_name?.let { Text(it, fontSize = 15.sp, color = Color.LightGray) }
+                }
+                Box(
+                    modifier = Modifier
+                        .size(40.dp) // Kích thước tổng thể (bao gồm viền)
+                        .clip(CircleShape) // Bo tròn
+                        .border(2.dp, Color.White, CircleShape) // Viền trắng
+                        .padding(10.dp) // Cách mép một chút cho icon nhỏ gọn hơn
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add",
+                        tint = Color.White,
+                        modifier = Modifier.fillMaxSize() // Để icon chiếm toàn bộ phần còn lại trong Box
+                    )
+                }
+
+
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+
+
+        }
+
+        item {
+            Slider(
+                value = sliderPosition,
+                onValueChange = { newValue ->
+                    sliderPosition = newValue
+                    mediaPlayer?.seekTo((duration * newValue).toInt())
+                    currentPosition = (duration * newValue).toInt()
+                },
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth(),
+                colors = SliderDefaults.colors(
+                    thumbColor = Color.White,
+                    activeTrackColor = Color.White
+
                 )
+            )
+        }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(formatMillis(currentPosition), color = Color.White, fontSize = 15.sp)
+                Text(formatMillis(duration), color = Color.White, fontSize = 15.sp)
             }
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(formatMillis(currentPosition), color = Color.White, fontSize = 15.sp)
-                    Text(formatMillis(duration), color = Color.White, fontSize = 15.sp)
+
+            Spacer(modifier = Modifier.height(14.dp))
+        }
+
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.shuffle_variant),
+                        contentDescription = "Shuffle",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
-            }
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.skip_previous),
+                        contentDescription = "Previous",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
 
-            item {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painterResource(id = R.drawable.shuffle_variant),
-                            contentDescription = "Shuffle",
-                            tint = Color.White,
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painterResource(id = R.drawable.skip_previous),
-                            contentDescription = "Previous",
-                            tint = Color.White,
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-
-                    IconButton(onClick = {
-                        mediaPlayer?.let {
-                            if (it.isPlaying) {
-                                it.pause()
-                                isPlaying = false
-                            } else {
-                                it.start()
-                                isPlaying = true
-                            }
+                IconButton(onClick = {
+                    mediaPlayer?.let {
+                        if (it.isPlaying) {
+                            it.pause()
+                            isPlaying = false
+                        } else {
+                            it.start()
+                            isPlaying = true
                         }
-                    }) {
-                        Icon(
-                            painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(
-                                id = R.drawable.play
-                            ),
-                            contentDescription = if (isPlaying) "Pause" else "Play",
-                            tint = Color.White,
-                            modifier = Modifier.size(48.dp)
-                        )
                     }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painterResource(id = R.drawable.skip_next),
-                            contentDescription = "Next",
-                            tint = Color.White,
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-                    IconButton(onClick = {
-                        isLooping = !isLooping
-                        mediaPlayer?.isLooping = isLooping
-                    }) {
-                        Icon(
-                            Icons.Default.Refresh,
-                            contentDescription = "Refresh",
-                            tint = if (isLooping) Color.Green else Color.White,
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-
+                }) {
+                    Icon(
+                        painter = if (isPlaying) painterResource(id = R.drawable.pause) else painterResource(
+                            id = R.drawable.play
+                        ),
+                        contentDescription = if (isPlaying) "Pause" else "Play",
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
                 }
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.skip_next),
+                        contentDescription = "Next",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+                IconButton(onClick = {
+                    isLooping = !isLooping
+                    mediaPlayer?.isLooping = isLooping
+                }) {
+                    Icon(
+                        Icons.Default.Refresh,
+                        contentDescription = "Refresh",
+                        tint = if (isLooping) Color.Green else Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+
             }
         }
     }

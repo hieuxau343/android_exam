@@ -64,8 +64,8 @@ fun LoveScreen(navController: NavController) {
         Song(4, "Astronomia", "astronomia", "Tony Igy", "https://example.com/astronomia.mp3")
     )
     val filteredSongs = songList.filter {
-        it.name_song.contains(searchText, ignoreCase = true) ||
-                it.singer.contains(searchText, ignoreCase = true)
+        it.name.contains(searchText, ignoreCase = true) ||
+                it.artist_name.contains(searchText, ignoreCase = true)
     }
     if (showSheet) {
         ModalBottomSheet(
@@ -277,12 +277,12 @@ private fun SongItem(song: Song, context: Context) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = song.name_song,
+                text = song.name,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
             Text(
-                text = song.singer,
+                text = song.artist_name,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )

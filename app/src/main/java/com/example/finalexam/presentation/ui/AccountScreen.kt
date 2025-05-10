@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,22 +35,14 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.finalexam.R
 import com.example.finalexam.SharedPrefsHelper
-import com.example.finalexam.presentation.viewmodel.UserInfoViewModel
 
-@Preview(showBackground = true)
 @Composable
 fun AccountScreen(navController: NavController) {
-    val userInfoViewModel: UserInfoViewModel = viewModel()
     val context = LocalContext.current
     val sharedPrefsHelper = SharedPrefsHelper(context)
-    val token = sharedPrefsHelper.getToken()
-    val user = userInfoViewModel.user
+    val user = sharedPrefsHelper.getUser() ?: null
 
-    LaunchedEffect(token) {
-        if (!token.isNullOrEmpty()) {
-            userInfoViewModel.get_user_info(token)
-        }
-    }
+
 
     LazyColumn(
         Modifier
@@ -81,7 +69,7 @@ fun AccountScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
-                    model = "", //dien user vao day user.image
+                    model = user?.image, //dien user vao day user.image
                     contentDescription = "",
                     error = painterResource(id = R.drawable.background),
                     modifier = Modifier
@@ -90,12 +78,14 @@ fun AccountScreen(navController: NavController) {
 
                     )
                 Column(modifier = Modifier.padding(start = 15.dp)) {
-                    Text(
-                        "hieuxau123",
-                        fontSize = 25.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    user?.fullname?.let {
+                        Text(
+                            it,
+                            fontSize = 25.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     Text(
                         buildAnnotatedString {
                             withStyle(style = SpanStyle(color = Color.LightGray)) {

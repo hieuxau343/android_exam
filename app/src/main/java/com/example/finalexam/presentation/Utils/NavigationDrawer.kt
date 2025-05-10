@@ -44,25 +44,16 @@ import androidx.navigation.NavHostController
 import com.example.finalexam.R
 import com.example.finalexam.SharedPrefsHelper
 import com.example.finalexam.presentation.model.MenuItem
-import com.example.finalexam.presentation.viewmodel.UserInfoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-private fun DrawerHeader(userInfoViewModel: UserInfoViewModel,context: Context) {
+private fun DrawerHeader(context: Context) {
     val sharedPrefsHelper = SharedPrefsHelper(context)
-    val token = sharedPrefsHelper.getToken()
-    val user = userInfoViewModel.user
-    Log.e("test",token.toString())
-    LaunchedEffect(user) {
-        if (!token.isNullOrEmpty()) {
+    val user = sharedPrefsHelper.getUser()
 
-            userInfoViewModel.get_user_info(token)
-
-
-        }
-    }
 
 
 
@@ -148,7 +139,6 @@ private fun DrawerBody(
 
 @Composable
 fun DrawerContent(
-    userInfoViewModel: UserInfoViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
     scope: CoroutineScope,
@@ -157,7 +147,7 @@ fun DrawerContent(
 ) {
 
     // Đưa DrawerHeader vào đây
-    DrawerHeader(userInfoViewModel = userInfoViewModel, context = context)
+    DrawerHeader(context = context)
 
     // Đưa DrawerBody vào đây
     val items = listOf(

@@ -33,10 +33,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.finalexam.R
+import com.example.finalexam.data.model.Song
 import com.example.finalexam.presentation.viewmodel.HomeViewModel
+import com.example.finalexam.presentation.viewmodel.SongViewModel
 
 @Composable
-fun HomeScreen(navController: NavController,modifier: Modifier = Modifier, homeViewModel: HomeViewModel = viewModel()) {
+fun HomeScreen(navController: NavController,modifier: Modifier = Modifier, homeViewModel: HomeViewModel = viewModel(), songViewModel: SongViewModel = viewModel()) {
 
     val imageList = listOf(
         "https://cdn.pixabay.com/photo/2016/09/07/10/37/kermit-1651325_1280.jpg",
@@ -45,10 +47,10 @@ fun HomeScreen(navController: NavController,modifier: Modifier = Modifier, homeV
     )
     val pagerState = rememberPagerState(pageCount = { imageList.size })
     val categories = homeViewModel.categories
-    val list_song = homeViewModel.songs
+    val list_song = songViewModel.songs
 
     LaunchedEffect (Unit){
-        homeViewModel.fetchSongs()
+        songViewModel.fetchSong()
     }
 
     LaunchedEffect(Unit) {
@@ -136,59 +138,64 @@ fun HomeScreen(navController: NavController,modifier: Modifier = Modifier, homeV
 
         //
         item {
-            Column {
-                Text(
-                    "Nhạc",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 20.dp)
-                )
-
-                LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(list_song) { song ->
-                        Column(
-                            modifier = Modifier.padding(end = 15.dp)
-                                .clickable {
-                                    //click vao nhac
-                                    navController.navigate("play_screen/${song.id}")
-                                }
-                        ) {
-                            AsyncImage(
-                                model = song.image_song,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .width(175.dp)
-                                    .height(160.dp)
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop,
-                            )
-                            //ten nhac
-                            Text(
-                                text = song.name_song,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 5.dp)
-                            )
-                            //ten ca si
-                            Text(
-                                song.singer,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.LightGray
-                            )
-                        }
-                    }
-                }
-            }
+            songRow(list_song,navController)
 
         }
     }
 
 
+}
+
+@Composable
+private fun songRow(list_song: List<Song>, navController: NavController){
+    Column {
+        Text(
+            "Nhạc",
+            color = Color.White,
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(vertical = 20.dp)
+        )
+
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(list_song) { song ->
+                Column(
+                    modifier = Modifier.padding(end = 15.dp)
+                        .clickable {
+                            //click vao nhac
+                            navController.navigate("play_screen/${song.id}")
+                        }
+                ) {
+                    AsyncImage(
+                        model = song.image,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .width(175.dp)
+                            .height(160.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop,
+                    )
+                    //ten nhac
+                    Text(
+                        text = song.name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 5.dp)
+                    )
+                    //ten ca si
+                    Text(
+                        song.artist_name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.LightGray
+                    )
+                }
+            }
+        }
+    }
 }
 
 
